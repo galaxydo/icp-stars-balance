@@ -1,3 +1,5 @@
+import cors from 'https://deno.land/x/edge_cors/src/cors.ts'
+
 // Define constants
 const ROSETTA_URL = 'https://rosetta-api.internetcomputer.org';
 const NET_ID = {
@@ -81,6 +83,8 @@ Deno.serve( async (req: Request) => {
 
   const starsBalanceFixedPoint = Number(starsBalance / factor).toPrecision();
 
-    return new Response(starsBalanceFixedPoint)
+  return cors(
+    req,
+    new Response(starsBalanceFixedPoint)
+  );
 });
-
