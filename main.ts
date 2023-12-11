@@ -81,7 +81,7 @@ Deno.serve( async (req: Request) => {
 
   const factor = BigInt(10 ** decimals);
 
-  const starsBalanceFixedPoint = Number(starsBalance / factor).toPrecision();
+  const starsBalanceFixedPoint = Number(starsBalance / factor).toFixed(decimals);
 
   return cors(
     req,
