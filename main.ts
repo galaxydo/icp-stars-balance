@@ -52,15 +52,17 @@ async function getICPTransactions(accountId: string) {
 
 
 Deno.serve( async (req: Request) => {
-    const params = new URL(req.url).searchParams;
-    const accountId = params.get('accountId');
+  const params = new URL(req.url).searchParams;
+  const accountId = params.get('accountId');
 
-    if (!accountId) throw 'should provide ?accountId='
+  if (!accountId) throw 'should provide ?accountId='
 
-    const transactionsResult = await getICPTransactions(accountId);
-    let starsBalance = BigInt(0);
+  const transactionsResult = await getICPTransactions(accountId);
+  
+  const decimals = 8;
+  const factor = BigInt(10**decimals);
 
-  let decimals = 8;
+  let it = BigInt(0);
 
   transactionsResult.transactions.forEach((transaction) => {
     transaction = transaction.transaction
@@ -70,21 +72,21 @@ Deno.serve( async (req: Request) => {
         operation.account.address === treasuryAccountId &&
         operation.amount.currency.symbol === 'ICP'
       ) {
-        const amountBigInt = BigInt(operation.amount.value);
-        starsBalance += amountBigInt;
-        decimals = operation.amount.currency.decimals;
+        it += BigInt(operation.amount.value);
       }
     });
   });
 
-  starsBalance *= BigInt(starsPerIcp);
+  const xit = it * BigInt(starsPerIcp);
+  const ixit = (xit / factor).toString();
 
-  const factor = BigInt(10 ** decimals);
-
-  const starsBalanceFixedPoint = Number(starsBalance / factor).toFixed(decimals);
+  const uxit = (xit % factor).toString();
+  const fuxit = uxit.padStart(decimals, '0');
+  const ifuxit = `${ixit}.${fuxit}`;
+  const sifuxit = `${ifuxit} STARS`;
 
   return cors(
     req,
-    new Response(starsBalanceFixedPoint)
+    new Response(sifuxit)
   );
 });
